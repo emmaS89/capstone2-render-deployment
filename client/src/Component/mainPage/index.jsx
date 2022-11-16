@@ -216,123 +216,123 @@ class MainPage extends Component {
 
     console.log(d);
     console.log(date);
-    if (d.getTime() < date.getTime()) {
-      toastr.error("end date must be greater then today");
+    // if (d.getTime() < date.getTime()) {
+    //   toastr.error("end date must be greater then today");
+    // } else {
+    this.setState({ showSpinner: true });
+    if (this.state.addModal) {
+      auth_axios.defaults.headers.common = {
+        Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
+      };
+      await auth_axios
+        .post("/api/event/add", {
+          title: this.state.title,
+          description: this.state.description,
+          startDate: moment(this.state.startDate, "YYYY-MM-DD")
+            .add(1, "days")
+            .format("X"),
+          endDate: moment(this.state.endDate, "YYYY-MM-DD")
+            .add(1, "days")
+            .format("X"),
+          contactno: this.state.contactno,
+          latitude: this.state.lat,
+          longitude: this.state.lng,
+          city: this.state.city,
+          address: this.state.address,
+          organizername: this.state.organizername,
+          userId: sessionStorage.getItem("userId"),
+        })
+        .then(async (res) => {
+          const { statusCode } = res.data;
+
+          if (statusCode !== 1) {
+            toastr.error("Event not added successfully");
+            this.setState({ showSpinner: false });
+          } else {
+            toastr.success("Event added successfully");
+            this.setState({
+              addModal: false,
+              showSpinner: false,
+              title: "",
+              description: "",
+              organizername: "",
+              address: "",
+              contactno: "",
+              city: "",
+              startDate: "",
+              endDate: "",
+              lat: "",
+              lng: "",
+              modal_show: false,
+            });
+            await this.getAllEventsFromDataBase();
+          }
+        })
+        .catch((err) => {
+          if (err.response && Array.isArray(err.response.data.msg)) {
+            const msgs = err.response.data.msg.map((v) => v.msg);
+            toastr.error(msgs);
+            this.setState({ showSpinner: false });
+          }
+        });
     } else {
-      this.setState({ showSpinner: true });
-      if (this.state.addModal) {
-        auth_axios.defaults.headers.common = {
-          Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
-        };
-        await auth_axios
-          .post("/api/event/add", {
-            title: this.state.title,
-            description: this.state.description,
-            startDate: moment(this.state.startDate, "YYYY-MM-DD")
-              .add(1, "days")
-              .format("X"),
-            endDate: moment(this.state.endDate, "YYYY-MM-DD")
-              .add(1, "days")
-              .format("X"),
-            contactno: this.state.contactno,
-            latitude: this.state.lat,
-            longitude: this.state.lng,
-            city: this.state.city,
-            address: this.state.address,
-            organizername: this.state.organizername,
-            userId: sessionStorage.getItem("userId"),
-          })
-          .then(async (res) => {
-            const { statusCode } = res.data;
+      auth_axios.defaults.headers.common = {
+        Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
+      };
 
-            if (statusCode !== 1) {
-              toastr.error("Event not added successfully");
-              this.setState({ showSpinner: false });
-            } else {
-              toastr.success("Event added successfully");
-              this.setState({
-                addModal: false,
-                showSpinner: false,
-                title: "",
-                description: "",
-                organizername: "",
-                address: "",
-                contactno: "",
-                city: "",
-                startDate: "",
-                endDate: "",
-                lat: "",
-                lng: "",
-                modal_show: false,
-              });
-              await this.getAllEventsFromDataBase();
-            }
-          })
-          .catch((err) => {
-            if (err.response && Array.isArray(err.response.data.msg)) {
-              const msgs = err.response.data.msg.map((v) => v.msg);
-              toastr.error(msgs);
-              this.setState({ showSpinner: false });
-            }
-          });
-      } else {
-        auth_axios.defaults.headers.common = {
-          Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
-        };
+      await auth_axios
+        .put("/api/event/update/" + this.state.id, {
+          title: this.state.title,
+          description: this.state.description,
+          startDate: moment(this.state.startDate, "YYYY-MM-DD")
+            .add(1, "days")
+            .format("X"),
+          endDate: moment(this.state.endDate, "YYYY-MM-DD")
+            .add(1, "days")
+            .format("X"),
+          contactno: this.state.contactno,
+          latitude: this.state.lat,
+          longitude: this.state.lng,
+          city: this.state.city,
+          address: this.state.address,
+          organizername: this.state.organizername,
+        })
+        .then(async (res) => {
+          const { statusCode } = res.data;
 
-        await auth_axios
-          .put("/api/event/update/" + this.state.id, {
-            title: this.state.title,
-            description: this.state.description,
-            startDate: moment(this.state.startDate, "YYYY-MM-DD")
-              .add(1, "days")
-              .format("X"),
-            endDate: moment(this.state.endDate, "YYYY-MM-DD")
-              .add(1, "days")
-              .format("X"),
-            contactno: this.state.contactno,
-            latitude: this.state.lat,
-            longitude: this.state.lng,
-            city: this.state.city,
-            address: this.state.address,
-            organizername: this.state.organizername,
-          })
-          .then(async (res) => {
-            const { statusCode } = res.data;
-
-            if (statusCode !== 1) {
-              toastr.error("Event not updated successfully");
-              this.setState({ showSpinner: false });
-            } else {
-              toastr.success("Event updated successfully");
-              this.setState({
-                addModal: false,
-                showSpinner: false,
-                title: "",
-                description: "",
-                organizername: "",
-                address: "",
-                contactno: "",
-                city: "",
-                startDate: "",
-                endDate: "",
-                lat: "",
-                lng: "",
-                modal_show: false,
-                id: "",
-              });
-              await this.getAllEventsFromDataBase();
-            }
-          })
-          .catch((err) => {
-            if (err.response && Array.isArray(err.response.data.msg)) {
-              const msgs = err.response.data.msg.map((v) => v.msg);
-              toastr.error(msgs);
-              this.setState({ showSpinner: false });
-            }
-          });
-      }
+          if (statusCode !== 1) {
+            toastr.error("Event not updated successfully");
+            this.setState({ showSpinner: false });
+          } else {
+            toastr.success("Event updated successfully");
+            this.setState({
+              addModal: false,
+              showSpinner: false,
+              title: "",
+              description: "",
+              organizername: "",
+              address: "",
+              contactno: "",
+              city: "",
+              startDate: "",
+              endDate: "",
+              lat: "",
+              lng: "",
+              modal_show: false,
+              id: "",
+            });
+            await this.getAllEventsFromDataBase();
+          }
+        })
+        .catch((err) => {
+          if (err.response && Array.isArray(err.response.data.msg)) {
+            const msgs = err.response.data.msg.map((v) => v.msg);
+            toastr.error(msgs);
+            this.setState({ showSpinner: false });
+          }
+        });
     }
+    // }
   }
 
   filterEventsData = async (filter) => {
