@@ -20,7 +20,7 @@ class Database {
     try {
       const client = new Client({
         connectionString: DB_URI,
-        // ssl: { rejectUnauthorized: false },
+        ssl: { rejectUnauthorized: false },
       });
       logger.info(msgUtil.databaseConnectionSuccessfull);
       logger.info(msgUtil.dbInfo("event_management"));
