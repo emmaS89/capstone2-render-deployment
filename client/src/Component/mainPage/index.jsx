@@ -164,10 +164,7 @@ class MainPage extends Component {
   async handleChangePasswordSubmit(e) {
     e.preventDefault();
     this.setState({ showSpinner: true });
-    if (
-      this.state.changePassword != "" &&
-      this.state.changePassword.length > 0
-    ) {
+    if (this.state.changePassword != "") {
       auth_axios.defaults.headers.common = {
         Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
       };
@@ -206,6 +203,7 @@ class MainPage extends Component {
         });
     } else {
       toastr.error("Please enter new password");
+      this.setState({ showSpinner: false });
     }
   }
 
