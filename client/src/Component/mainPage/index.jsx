@@ -164,7 +164,10 @@ class MainPage extends Component {
   async handleChangePasswordSubmit(e) {
     e.preventDefault();
     this.setState({ showSpinner: true });
-    if (this.state.changePassword != "") {
+    if (
+      this.state.changePassword != "" &&
+      this.state.changePassword.length > 0
+    ) {
       auth_axios.defaults.headers.common = {
         Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
       };
@@ -177,7 +180,9 @@ class MainPage extends Component {
           const { statusCode } = res.data;
 
           if (statusCode !== 1) {
-            toastr.error("Password Not Changed");
+            toastr.error(
+              "You have enter your current password please change it first"
+            );
             this.setState({ showSpinner: false });
           } else {
             toastr.success("Password updated successfull");
@@ -255,7 +260,7 @@ class MainPage extends Component {
               showSpinner: false,
               title: "",
               description: "",
-              organizername: "",
+              // organizername: "",
               address: "",
               contactno: "",
               city: "",
@@ -310,7 +315,7 @@ class MainPage extends Component {
               showSpinner: false,
               title: "",
               description: "",
-              organizername: "",
+              // organizername: "",
               address: "",
               contactno: "",
               city: "",
@@ -829,6 +834,7 @@ class MainPage extends Component {
                           className="form-control"
                           id="message-text"
                           name="newPassword"
+                          min={"6"}
                           onChange={(e) => this.handleChange(e)}
                           value={this.state.newPassword}
                         />

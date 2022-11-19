@@ -77,8 +77,27 @@ class User {
   }
 
   static async changePassword(_id, password) {
+    const user1 = await db.query(
+      `SELECT *
+        FROM users 
+        WHERE id = $1`,
+      [_id]
+    );
+
+    if (!user1.rows[0]) {
+      throw new APIError(httpStatus.NOT_FOUND, msgUtil.noUserExists);
+    }
+
+    if (user.checkPass(user1.rows[0], password)) {
+      throw new APIError(
+        httpStatus.BAD_REQUEST,
+        "This is your current password change your password first"
+      );
+    }
+
+    const hashedPassword = await bcrypt.hashSync(password, 10);
     const user = await db.query(`update users set pswd = $1 where id = $2`, [
-      password,
+      hashedPassword,
       _id,
     ]);
     return user.rows[0];
