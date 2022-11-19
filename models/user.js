@@ -83,19 +83,18 @@ class User {
         WHERE id = $1`,
       [_id]
     );
-
+    const hashedPassword = await bcrypt.hashSync(password, 10);
     if (!user1.rows[0]) {
       throw new APIError(httpStatus.NOT_FOUND, msgUtil.noUserExists);
     }
 
-    if (user.checkPass(user1.rows[0], password)) {
+    if (await bcrypt.compareSync(password, user1.rows[0].pswd)) {
       throw new APIError(
         httpStatus.BAD_REQUEST,
         "This is your current password change your password first"
       );
     }
 
-    const hashedPassword = await bcrypt.hashSync(password, 10);
     const user = await db.query(`update users set pswd = $1 where id = $2`, [
       hashedPassword,
       _id,
