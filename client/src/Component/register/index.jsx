@@ -4,7 +4,7 @@ import urls from "../../helpers/urls";
 import axios from "axios";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
-
+import config from "../../helpers/config";
 class Register extends Component {
   constructor(props) {
     super(props);
@@ -22,12 +22,15 @@ class Register extends Component {
     // log in
     this.setState({ showSpinner: true });
     await axios
-      .post("/api/users/register", {
-        email: this.state.email,
-        pswd: this.state.password,
-        firstname: this.state.firstName,
-        lastname: this.state.lastName,
-      })
+      .post(
+        `${config.env == "prod" ? config.baseUrl : ""}/api/users/register`,
+        {
+          email: this.state.email,
+          pswd: this.state.password,
+          firstname: this.state.firstName,
+          lastname: this.state.lastName,
+        }
+      )
       .then((res) => {
         toastr.success("Signup Success Redirecting to login.........");
         this.setState({ showSpinner: false });

@@ -5,6 +5,7 @@ import axios from "axios";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import auth_axios from "../../utils/auth_axios";
+import config from "../../helpers/config";
 
 class Login extends Component {
   constructor(props) {
@@ -19,11 +20,15 @@ class Login extends Component {
     e.preventDefault();
     // log in
     this.setState({ showSpinner: true });
+
     await axios
-      .post("/api/users/authenticate", {
-        email: this.state.email,
-        pswd: this.state.password,
-      })
+      .post(
+        `${config.env == "prod" ? config.baseUrl : ""}/api/users/authenticate`,
+        {
+          email: this.state.email,
+          pswd: this.state.password,
+        }
+      )
       .then((res) => {
         const {
           statusCode,

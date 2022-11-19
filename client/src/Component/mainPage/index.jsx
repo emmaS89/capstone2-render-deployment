@@ -8,7 +8,7 @@ import moment from "moment";
 import Filter from "./Filter";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
-
+import config from "../../helpers/config";
 class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -89,7 +89,7 @@ class MainPage extends Component {
       Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
     };
     await auth_axios
-      .get("/api/city/getAll")
+      .get(`${config.env == "prod" ? config.baseUrl : ""}/api/city/getAll`)
       .then((res) => {
         if (res.data.statusCode === 1) {
           this.setState({ cities: res.data.data.cities });
@@ -111,7 +111,7 @@ class MainPage extends Component {
       Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
     };
     await auth_axios
-      .get("/api/event/all")
+      .get(`${config.env == "prod" ? config.baseUrl : ""}/api/event/all`)
       .then((res) => {
         if (res.data.statusCode === 1) {
           let events = [];
@@ -172,10 +172,15 @@ class MainPage extends Component {
         Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
       };
       await auth_axios
-        .post("/api/users/passwordChange", {
-          userId: sessionStorage.getItem("userId"),
-          newPassword: this.state.newPassword,
-        })
+        .post(
+          `${
+            config.env == "prod" ? config.baseUrl : ""
+          }/api/users/passwordChange`,
+          {
+            userId: sessionStorage.getItem("userId"),
+            newPassword: this.state.newPassword,
+          }
+        )
         .then(async (res) => {
           const { statusCode } = res.data;
 
@@ -230,7 +235,7 @@ class MainPage extends Component {
         Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
       };
       await auth_axios
-        .post("/api/event/add", {
+        .post(`${config.env == "prod" ? config.baseUrl : ""}/api/event/add`, {
           title: this.state.title,
           description: this.state.description,
           startDate: moment(this.state.startDate, "YYYY-MM-DD")
@@ -286,22 +291,26 @@ class MainPage extends Component {
       };
 
       await auth_axios
-        .put("/api/event/update/" + this.state.id, {
-          title: this.state.title,
-          description: this.state.description,
-          startDate: moment(this.state.startDate, "YYYY-MM-DD")
-            .add(1, "days")
-            .format("X"),
-          endDate: moment(this.state.endDate, "YYYY-MM-DD")
-            .add(1, "days")
-            .format("X"),
-          contactno: this.state.contactno,
-          latitude: this.state.lat,
-          longitude: this.state.lng,
-          city: this.state.city,
-          address: this.state.address,
-          organizername: this.state.organizername,
-        })
+        .put(
+          `${config.env == "prod" ? config.baseUrl : ""}/api/event/update/` +
+            this.state.id,
+          {
+            title: this.state.title,
+            description: this.state.description,
+            startDate: moment(this.state.startDate, "YYYY-MM-DD")
+              .add(1, "days")
+              .format("X"),
+            endDate: moment(this.state.endDate, "YYYY-MM-DD")
+              .add(1, "days")
+              .format("X"),
+            contactno: this.state.contactno,
+            latitude: this.state.lat,
+            longitude: this.state.lng,
+            city: this.state.city,
+            address: this.state.address,
+            organizername: this.state.organizername,
+          }
+        )
         .then(async (res) => {
           const { statusCode } = res.data;
 
@@ -352,7 +361,10 @@ class MainPage extends Component {
       Authorization: "Bearer " + sessionStorage.getItem("JWTtoken"),
     };
     await auth_axios
-      .post("/api/event/filter", data)
+      .post(
+        `${config.env == "prod" ? config.baseUrl : ""}/api/event/filter`,
+        data
+      )
       .then((res) => {
         if (res.data.statusCode === 1) {
           this.setState({ events: res.data.data.events });
