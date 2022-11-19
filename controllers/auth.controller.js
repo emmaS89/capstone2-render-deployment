@@ -8,6 +8,7 @@ const keys = {
   jwtsecret: SECRET_KEY,
 };
 
+const bcrypt = require("bcrypt");
 // to make authorize route
 const ejwtauth = exjwt({ secret: keys.jwtsecret, algorithms: ["HS256"] });
 
@@ -36,9 +37,9 @@ const login = async (req, res, next) => {
   let user = User;
   user
     .checkIfUserWithEmailExists(req.body.email)
-    .then((_user) => {
+    .then(async (_user) => {
       // verify password
-      if (user.checkPass(_user, req.body.pswd)) {
+      if (await bcrypt.compareSync(req.body.pswd, _user.pswd)) {
         let token = jwt.sign(
           {
             id: _user.id, // add user id in token to use for authorization
