@@ -46,6 +46,7 @@ const CustomPopup = ({ index, marker, closePopup }) => {
         closeButton={true}
         closeOnClick={false}
         offsetTop={-30}
+        style={{ overflowX: "scroll" }} 
       >
         <table className="table" style={{ fontSize: "11px" }}>
           <tbody>

@@ -1,6 +1,7 @@
-## Event Management
+## Try Event Management
 
-[View Application](https://capston2-event-management.herokuapp.com/)
+[View Application](https://capston2-front.onrender.com/)
+
 
 ## Overview:
 

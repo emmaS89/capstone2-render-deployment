@@ -1,5 +1,9 @@
-#Api Routes
+Api Routes
 Following are the api rotes
+
+## Try Event Management
+
+[View Application](https://capston2-front.onrender.com/)
 
 ### ping
 
